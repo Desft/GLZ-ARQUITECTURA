@@ -863,3 +863,85 @@ footer {
 html {
     scroll-behavior: smooth;
 }
+
+/* ---------------------------------------------------- */
+/* ESTILOS PARA MÓVILES (MEDIA QUERIES)       */
+/* ---------------------------------------------------- */
+
+/* Para pantallas de hasta 768px (tablets y móviles) */
+@media (max-width: 768px) {
+    /* Ajustes generales del padding para que el contenido no esté pegado a los bordes */
+    nav {
+        padding: 0 1.5rem;
+    }
+
+    .container {
+        padding: 0 1.5rem;
+    }
+    
+    .section {
+        padding: 80px 0;
+    }
+
+    /* Ajustes del Hero Section */
+    .hero {
+        padding-top: 90px; /* Reducimos el padding superior para móviles */
+    }
+
+    .hero-content h1 {
+        font-size: 2.2rem; /* Se reduce el tamaño de la fuente para que la frase quepa */
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem; /* Reducimos el tamaño de la fuente para móviles */
+        max-width: 90%; /* Ajustamos el ancho máximo del subtítulo */
+    }
+
+    /* Ajustes en el Título de Sección */
+    .section-title {
+        font-size: 2.5rem; /* Títulos de sección más pequeños */
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .section-title::after {
+        margin: 1rem auto 0;
+    }
+
+    /* Ajustes de los Grids (Servicios, Proyectos, About) */
+    .services-grid,
+    .projects-grid {
+        grid-template-columns: 1fr; /* Una sola columna para móviles */
+        gap: 2rem;
+    }
+
+    .about-content {
+        grid-template-columns: 1fr; /* El contenido se apila verticalmente */
+        gap: 3rem;
+    }
+
+    /* Ajuste para las estadísticas dentro de la sección "About" */
+    .stats {
+        grid-template-columns: 1fr; /* Una sola columna para las estadísticas */
+    }
+
+    /* Ajustes de la sección de contacto */
+    .contact-content {
+        grid-template-columns: 1fr; /* Se apila el formulario y la información */
+        gap: 3rem;
+    }
+    
+    .contact-form {
+        padding: 2rem;
+    }
+    
+    .contact-info {
+        padding: 0 1rem;
+    }
+    
+    /* Ajustes en los títulos del carrusel si es necesario */
+    .carousel-title {
+        font-size: 1.8rem;
+    }
+}
