@@ -113,3 +113,157 @@ window.addEventListener('load', () => {
     // para los elementos inicialmente visibles.
     // Pero si quieres una llamada explícita, puedes mantenerla si es más fácil de depurar.
 });
+
+// ********** Nuevo código para el Carrusel de Proyectos **********
+let currentSlide = 0;
+let isPlaying = true;
+let progressInterval;
+let slideInterval;
+const slides = document.querySelectorAll('.carousel-item');
+const totalSlides = slides.length;
+const carouselInner = document.getElementById('carouselInner');
+const progressBar = document.getElementById('progressBar');
+
+// Crear indicadores
+function createIndicators() {
+    const indicatorsContainer = document.getElementById('indicators');
+    for (let i = 0; i < totalSlides; i++) {
+        const indicator = document.createElement('div');
+        indicator.className = i === 0 ? 'indicator active' : 'indicator';
+        indicator.onclick = () => goToSlide(i);
+        indicatorsContainer.appendChild(indicator);
+    }
+}
+
+// Actualizar indicadores
+function updateIndicators() {
+    const indicators = document.querySelectorAll('.indicator');
+    indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentSlide);
+    });
+}
+
+// Actualizar slides
+function updateSlides() {
+    slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+    });
+    carouselInner.style.transform = `translateX(-${currentSlide * 100}%)`;
+    updateIndicators();
+}
+
+// Ir a slide específico
+function goToSlide(index) {
+    currentSlide = index;
+    updateSlides();
+    resetProgress();
+}
+
+// Siguiente slide
+function nextSlide() {
+    currentSlide = (currentSlide + 1) % totalSlides;
+    updateSlides();
+    resetProgress();
+}
+
+// Slide anterior
+function previousSlide() {
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    updateSlides();
+    resetProgress();
+}
+
+// Barra de progreso
+function updateProgress() {
+    let progress = 0;
+    progressInterval = setInterval(() => {
+        progress += 0.5;
+        progressBar.style.width = progress + '%';
+        if (progress >= 100) {
+            clearInterval(progressInterval);
+            if (isPlaying) {
+                nextSlide();
+            }
+        }
+    }, 40); // 4 segundos total
+}
+
+// Resetear progreso
+function resetProgress() {
+    clearInterval(progressInterval);
+    progressBar.style.width = '0%';
+    if (isPlaying) {
+        updateProgress();
+    }
+}
+
+// Auto-play
+function startAutoPlay() {
+    isPlaying = true;
+    resetProgress();
+}
+
+function stopAutoPlay() {
+    isPlaying = false;
+    clearInterval(progressInterval);
+}
+
+// Event listeners para pausar en hover
+const carouselContainer = document.querySelector('.carousel-container');
+if (carouselContainer) {
+    carouselContainer.addEventListener('mouseenter', stopAutoPlay);
+    carouselContainer.addEventListener('mouseleave', startAutoPlay);
+}
+
+
+// Controles de teclado
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+        previousSlide();
+    } else if (e.key === 'ArrowRight') {
+        nextSlide();
+    }
+});
+
+// Touch/Swipe support para móviles
+let startX = 0;
+let endX = 0;
+
+if (carouselContainer) {
+    carouselContainer.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    });
+
+    carouselContainer.addEventListener('touchmove', (e) => {
+        endX = e.touches[0].clientX;
+    });
+
+    carouselContainer.addEventListener('touchend', () => {
+        if (startX - endX > 50) {
+            nextSlide();
+        } else if (endX - startX > 50) {
+            previousSlide();
+        }
+    });
+}
+
+// Inicialización del carrusel
+document.addEventListener('DOMContentLoaded', () => {
+    if (slides.length > 0) {
+        createIndicators();
+        startAutoPlay();
+        updateSlides(); // Asegura que el carrusel se muestre correctamente al cargar la página
+        preloadImages();
+    }
+});
+
+// Precargar imágenes
+function preloadImages() {
+    slides.forEach(slide => {
+        const img = slide.querySelector('img');
+        if (img && img.src) {
+            const preloadImg = new Image();
+            preloadImg.src = img.src;
+        }
+    });
+}

@@ -75,7 +75,7 @@ nav {
 
 /* ESTO ES LO QUE AÑADIRÍAS/MODIFICARÍAS */
 .logo img {
-    height: 70px; /* Ajusta este valor */
+    height: 60px; /* Ajusta este valor */
     width: auto;
     display: block;
 }
@@ -194,33 +194,47 @@ nav {
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%236F4E37" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="%23A0836C" opacity="0.03"/></pattern></defs><rect width="1000" height="1000" fill="url(%23grain)"/></svg>');
     opacity: 0.3; /* Grain with coffee brown tones */
 }
-
-.hero-content {
-    text-align: center;
-    max-width: 800px;
-    z-index: 2;
+.cta-center {
+    margin: 0 auto;
+    display: block;
+    width: fit-content;
+}
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--light-neutral-background) 0%, #F5F5F5 100%);
     position: relative;
+    overflow: hidden;
+    padding-top: 120px;
+    flex-direction: column; /* Nuevo: Añadimos un padding superior para evitar que el contenido se oculte detrás del header */
 }
 
 .hero-content h1 {
-    font-size: 4rem;
+    font-size: 2.2rem;
     font-weight: 300;
-    color: var(--coffee-brown-dark); /* Title in dark coffee brown */
+    color: var(--coffee-brown-dark);
     margin-bottom: 1.5rem;
-    letter-spacing: -2px;
-    line-height: 1.1;
+    letter-spacing: -1px;
+    line-height: 1.2;
     opacity: 0;
     animation: fadeInUp 1.2s ease 0.3s forwards;
+    text-align: center;
 }
 
 .hero-subtitle {
-    font-size: 1.3rem;
-    color: var(--text-dark); /* Subtitle in dark text */
+    font-size: 1.3rem; /* Se mantiene el tamaño de fuente */
+    color: var(--text-dark);
     margin-bottom: 3rem;
     font-weight: 300;
     letter-spacing: 0.5px;
     opacity: 0;
     animation: fadeInUp 1.2s ease 0.6s forwards;
+    text-align: justify; /* Mantiene el texto justificado */
+    max-width: 750px; /* Aumenta el ancho máximo para que el texto se extienda hasta las líneas de referencia */
+    margin: 0 auto 3rem auto; /* Centra el párrafo horizontalmente */
+    line-height: 1.6; /* Un poco más de espacio entre líneas para mejor legibilidad al ser un texto más ancho */
 }
 
 .cta-button {
@@ -338,6 +352,238 @@ nav {
 /* Projects */
 .projects {
     background: var(--light-neutral-background); /* Projects section in light neutral */
+}
+
+/* Nuevo CSS para el Carrusel de Proyectos */
+.carousel-container {
+    max-width: 1200px;
+    width: 100%;
+    position: relative;
+    margin: 0 auto;
+    background: var(--card-background-dark);
+    border: 1px solid var(--card-background-dark);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    transition: all 0.4s ease;
+}
+
+.carousel-container:hover {
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+    border-color: var(--card-hover-border);
+}
+
+.carousel {
+    position: relative;
+    height: 600px;
+    overflow: hidden;
+}
+
+.carousel-inner {
+    display: flex;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+}
+
+.carousel-item {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+}
+
+.carousel-item.active img {
+    transform: scale(1.05);
+}
+
+.carousel-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+    padding: 60px 40px 40px;
+    color: var(--card-text-light);
+    transform: translateY(100%);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-item.active .carousel-overlay {
+    transform: translateY(0);
+}
+
+.carousel-title {
+    font-size: 2.2rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: var(--card-text-light);
+    letter-spacing: -0.5px;
+}
+
+.carousel-description {
+    font-size: 1rem;
+    opacity: 0.9;
+    line-height: 1.6;
+    color: var(--card-text-light);
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--card-text-light);
+    width: 55px;
+    height: 55px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.4s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-nav:hover {
+    background: var(--card-hover-border);
+    color: var(--card-background-dark);
+    border-color: var(--card-hover-border);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.carousel-prev {
+    left: 20px;
+}
+
+.carousel-next {
+    right: 20px;
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.indicator {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border: 2px solid transparent;
+}
+
+.indicator.active {
+    background: var(--card-hover-border);
+    transform: scale(1.3);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.indicator:hover {
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(1.1);
+}
+
+.progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: var(--card-hover-border);
+    transition: width 0.1s linear;
+    z-index: 10;
+}
+
+.project-category {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--card-hover-border);
+    color: var(--card-background-dark);
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 5;
+}
+
+@keyframes slideInFromBottom {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.carousel-item.active .carousel-title {
+    animation: slideInFromBottom 0.8s ease 0.3s both;
+}
+
+.carousel-item.active .carousel-description {
+    animation: slideInFromBottom 0.8s ease 0.5s both;
+}
+
+.carousel-item.active .project-category {
+    animation: slideInFromBottom 0.6s ease 0.1s both;
+}
+
+@media (max-width: 768px) {
+    .carousel {
+        height: 450px;
+    }
+    
+    .carousel-title {
+        font-size: 1.8rem;
+    }
+    
+    .carousel-description {
+        font-size: 0.9rem;
+    }
+    
+    .carousel-nav {
+        width: 45px;
+        height: 45px;
+        font-size: 16px;
+    }
+
+    .carousel-overlay {
+        padding: 40px 30px 30px;
+    }
+
+    .container {
+        padding: 0 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel {
+        height: 400px;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+    }
+
+    .carousel-overlay {
+        padding: 30px 20px 20px;
+    }
 }
 
 .projects-grid {
@@ -494,7 +740,7 @@ nav {
 }
 
 .contact-form {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(2, 2, 2, 0.05);
     padding: 3rem;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -520,7 +766,7 @@ nav {
     width: 100%;
     padding: 15px 0;
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     background: transparent;
     color: white;
     font-size: 1rem;
