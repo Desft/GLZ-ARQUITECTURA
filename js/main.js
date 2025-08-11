@@ -97,12 +97,12 @@ document.querySelector('form').addEventListener('submit', function(e) {
 });
 
 // ********** UNIFICAMOS LOS EVENT LISTENERS DE SCROLL Y MEJORAMOS LA CABECERA **********
-window.addEventListener('scroll', () => {
+window.addEventListener('scroll', function() {
     const header = document.querySelector('header');
-    if (window.scrollY > 50) {
-        header.classList.add('scrolled'); // Añade la clase 'scrolled'
+    if (window.scrollY > 0) {
+        header.classList.add('scrolled');
     } else {
-        header.classList.remove('scrolled'); // Remueve la clase
+        header.classList.remove('scrolled');
     }
 });
 

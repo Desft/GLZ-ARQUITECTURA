@@ -34,28 +34,70 @@ body {
     font-family: 'Montserrat', sans-serif; /* Nueva tipografía para todo el body */
     line-height: 1.7;
     color: var(--text-dark);
-    background: var(--light-neutral-background); /* Main background is light neutral */
+    background: #FFFFFF; /* Main background is light neutral */
 }
+
+/* ---------------------------------------------------- */
+/* CAMBIOS EN EL HEADER Y HERO SECTION        */
+/* ---------------------------------------------------- */
 
 /* Header */
 header {
-    background: var(--menu-background-dark); /* Fondo del menú negro */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1.5rem 0;
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+    background-color: transparent; /* Fondo transparente por defecto */
+    box-shadow: none; /* Sin sombra por defecto */
+    padding: 1.5rem 0;
 }
 
 /* Estilos del header cuando se hace scroll */
 header.scrolled {
-    background: var(--menu-background-dark); /* Se mantiene negro */
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3); /* Sombra para resaltar */
-    padding: 1rem 0;
+    background-color: var(--menu-background-dark); /* Se activa el color oscuro */
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3); /* Se agrega la sombra */
+    padding: 1rem 0; /* Se ajusta el padding si es necesario */
 }
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 0; /* Se elimina el padding superior para que el video cubra el header */
+    flex-direction: column;
+    color: white; /* Color del texto por defecto para el hero */
+    text-align: center;
+}
+
+
+.hero-video {
+    position: absolute; /* en vez de fixed si solo quieres que cubra la sección */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-color: transparent; /* por si acaso */
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1; /* Asegura que el contenido esté por encima del video */
+    background: rgba(0, 0, 0, 0.45); /* Capa oscura semi-transparente para mejorar el contraste */
+    padding: 4rem 2rem; 
+    max-width: 70%;
+    border-radius: 5px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ---------------------------------------------------- */
+/* FIN DE CAMBIOS EN EL HEADER Y HERO         */
+/* ---------------------------------------------------- */
 
 nav {
     display: flex;
@@ -173,72 +215,33 @@ nav {
     border-radius: 2px;
 }
 
-/* Hero Section */
-.hero {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--light-neutral-background) 0%, #F5F5F5 100%); /* Light background gradient */
-    position: relative;
-    overflow: hidden;
-}
-
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%236F4E37" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="%23A0836C" opacity="0.03"/></pattern></defs><rect width="1000" height="1000" fill="url(%23grain)"/></svg>');
-    opacity: 0.3; /* Grain with coffee brown tones */
-}
-.cta-center {
-    margin: 0 auto;
-    display: block;
-    width: fit-content;
-}
-.hero {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--light-neutral-background) 0%, #F5F5F5 100%);
-    position: relative;
-    overflow: hidden;
-    padding-top: 120px;
-    flex-direction: column; /* Nuevo: Añadimos un padding superior para evitar que el contenido se oculte detrás del header */
-}
-
 .hero-content h1 {
-    font-size: 2.2rem;
+    font-size: 3rem;
     font-weight: 300;
-    color: var(--coffee-brown-dark);
+    color: white;
     margin-bottom: 1.5rem;
     letter-spacing: -1px;
     line-height: 1.2;
     opacity: 0;
     animation: fadeInUp 1.2s ease 0.3s forwards;
-    text-align: center;
 }
 
 .hero-subtitle {
-    font-size: 1.3rem; /* Se mantiene el tamaño de fuente */
-    color: var(--text-dark);
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.9);
     margin-bottom: 3rem;
     font-weight: 300;
     letter-spacing: 0.5px;
     opacity: 0;
     animation: fadeInUp 1.2s ease 0.6s forwards;
-    text-align: justify; /* Mantiene el texto justificado */
-    max-width: 750px; /* Aumenta el ancho máximo para que el texto se extienda hasta las líneas de referencia */
-    margin: 0 auto 3rem auto; /* Centra el párrafo horizontalmente */
-    line-height: 1.6; /* Un poco más de espacio entre líneas para mejor legibilidad al ser un texto más ancho */
+    text-align: center;
+    max-width: 750px;
+    margin: 0 auto 3rem auto;
+    line-height: 1.6;
 }
 
 .cta-button {
-    background: var(--coffee-brown-dark); /* CTA button in dark coffee brown */
+    background: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
     color: white;
     padding: 18px 40px;
     text-decoration: none;
@@ -250,14 +253,14 @@ nav {
     transition: all 0.4s ease;
     opacity: 0;
     animation: fadeInUp 1.2s ease 0.9s forwards;
-    border: 2px solid var(--coffee-brown-dark);
+    border: 2px solid rgba(255, 255, 255, 0.5); /* Borde más sutil */
 }
 
 .cta-button:hover {
-    background: transparent;
-    color: var(--coffee-brown-dark); /* Hover text in dark coffee brown */
+    background: rgba(255, 255, 255, 0.2); /* Más opaco al hacer hover */
+    color: white;
     transform: translateY(-2px);
-    border-color: var(--coffee-brown-dark); /* Border on hover in dark coffee brown */
+    border-color: white; /* Borde más sólido al hacer hover */
 }
 
 /* Section Styles */
@@ -308,46 +311,63 @@ nav {
     gap: 3rem;
 }
 
-/* Modificación para tarjetas de servicio negras */
+/* Nuevo estilo para la sección de servicios con imágenes */
 .service-card {
-    background: var(--card-background-dark);
-    padding: 3rem 2rem;
-    transition: all 0.4s ease;
-    border: 1px solid var(--card-background-dark);
+    position: relative;
+    overflow: hidden;
+    height: 400px; /* Ajusta la altura según tu preferencia */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--subtle-border-grey);
 }
 
 .service-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    border-color: var(--card-hover-border);
 }
 
-.service-icon {
-    width: 60px;
-    height: 60px;
-    background: var(--card-text-light); /* Iconos en blanco */
-    border-radius: 50%;
+.service-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
-    color: var(--card-background-dark); /* Icono interno en color del fondo de la tarjeta */
-    font-size: 1.4rem;
+    align-items: flex-end;
+    transition: transform 0.5s ease;
 }
 
-.service-card h3 {
-    font-size: 1.4rem;
-    font-weight: 500;
-    color: var(--card-text-light); /* Títulos en blanco */
-    margin-bottom: 1rem;
-    letter-spacing: -0.5px;
+.service-card:hover .service-image {
+    transform: scale(1.05);
 }
 
-.service-card p {
-    color: var(--card-text-light); /* Párrafos en blanco */
+.service-overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 2rem;
+    color: white;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: background 0.3s ease;
+}
+
+.service-card:hover .service-overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+}
+
+.service-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.service-description {
     font-size: 0.95rem;
+    opacity: 0.9;
     line-height: 1.6;
 }
+
 
 /* Projects */
 .projects {
@@ -631,7 +651,7 @@ nav {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgb(255, 255, 255), transparent);
     transition: left 0.6s ease;
 }
 
@@ -685,9 +705,8 @@ nav {
 }
 
 .stats {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+    display: flex;
+    justify-content: center;
     margin-top: 3rem;
 }
 
@@ -720,6 +739,62 @@ nav {
     letter-spacing: 1px;
 }
 
+/* NUEVO ESTILO PARA EL BOTÓN DE EXPERIENCIA */
+.experience-button {
+    text-align: left; /* Alineamos el texto a la izquierda */
+    padding: 1rem 4rem; /* Reducimos el padding vertical y mantenemos el horizontal */
+    background: var(--card-background-dark);
+    border: 2px solid var(--card-background-dark);
+    transition: all 0.5s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    width: 75%; /* Ajustamos el ancho para que se extienda */
+    margin: 3rem 0 0 0; /* Ajustamos el margen para posicionarlo */
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.experience-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    border-color: var(--card-hover-border);
+}
+
+.experience-button .stat-number {
+   font-size: 3rem; /* Reducimos un poco el tamaño del número si es necesario */
+    font-weight: 300;
+    color: var(--card-hover-border);
+    margin-bottom: 0;
+}
+.experience-button .stat-label {
+    font-size: 1rem; /* Reducimos un poco el tamaño del texto si es necesario */
+    color: var(--card-text-light);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+/* Animación del botón */
+.experience-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.experience-button:hover::before {
+    left: 100%;
+}
+
+/* Contact */
 .contact {
     background: var(--dark-section-background); /* Fondo gris/azul oscuro */
     color: white;
@@ -943,5 +1018,19 @@ html {
     /* Ajustes en los títulos del carrusel si es necesario */
     .carousel-title {
         font-size: 1.8rem;
+    }
+    
+    .experience-button {
+        flex-direction: column; /* Apila el número y el texto en móviles */
+        gap: 0.5rem;
+        padding: 2rem 1.5rem;
+    }
+    
+    .experience-button .stat-number {
+        font-size: 3rem;
+    }
+    
+    .experience-button .stat-label {
+        font-size: 0.9rem;
     }
 }
