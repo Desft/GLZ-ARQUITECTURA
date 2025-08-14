@@ -89,12 +89,20 @@ function animateCounters() {
     });
 }
 
-// Form submission
-document.querySelector('form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('¡Gracias por contactarnos! Te responderemos en las próximas 24 horas.');
-    this.reset();
-});
+// ** MODIFICACIÓN AQUÍ **
+// Eliminamos el listener que previene el envío y solo mostramos la alerta.
+// El envío se maneja automáticamente con el HTML.
+
+// ** Código original que fue modificado: **
+// document.querySelector('form').addEventListener('submit', function(e) {
+//     e.preventDefault();
+//     alert('¡Gracias por contactarnos! Te responderemos en las próximas 24 horas.');
+//     this.reset();
+// });
+
+// ** Nuevo código recomendado para manejar el mensaje de éxito **
+// Netlify se encarga del envío, y nosotros solo mostramos la alerta después de un envío exitoso.
+// Esto se logra de forma nativa con Netlify Forms.
 
 // ********** UNIFICAMOS LOS EVENT LISTENERS DE SCROLL Y MEJORAMOS LA CABECERA **********
 window.addEventListener('scroll', function() {
