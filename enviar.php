@@ -1,29 +1,45 @@
 <?php
+// Carga las clases de PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+// Incluye los archivos que copiaste
 require 'Exception.php';
 require 'PHPMailer.php';
 require 'SMTP.php';
-// Recibe los datos del formulario
-$nombre = $_POST['nombre'];
-$correo = $_POST['correo'];
-$mensaje = $_POST['mensaje'];
 
-// Tu dirección de correo
-$destino = "osorio.gnj@gmail.com"; 
+// Crea una nueva instancia de PHPMailer
+$mail = new PHPMailer(true);
 
-// Asunto del correo
-$asunto = "Nuevo mensaje de contacto desde tu sitio web";
+try {
+    // Configuración del servidor SMTP (es la forma más fiable)
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.tudominio.com'; // **Debes reemplazar con el SMTP de tu hosting**
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'tucorreo@tudominio.com'; // **Tu correo del hosting**
+    $mail->Password   = 'tucontraseña'; // **Tu contraseña de correo**
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port       = 587;
+    $mail->CharSet    = 'UTF-8';
 
-// Contenido del mensaje que recibirás
-$contenido = "Nombre: " . $nombre . "\n";
-$contenido .= "Correo: " . $correo . "\n";
-$contenido .= "Mensaje: " . $mensaje;
+    // Destinatarios y remitente
+    $mail->setFrom($_POST['email'], $_POST['name']); // El correo del usuario como remitente
+    $mail->addAddress('osorio.gnj@gmail.com'); // Tu correo de destino
+    $mail->addReplyTo($_POST['email'], $_POST['name']);
 
-// Envía el correo
-mail($destino, $asunto, $contenido);
+    // Contenido del correo
+    $mail->isHTML(false);
+    $mail->Subject = 'Nuevo mensaje de contacto: ' . $_POST['subject'];
+    $mail->Body    = "Nombre: " . $_POST['name'] . "\n"
+                   . "Correo: " . $_POST['email'] . "\n"
+                   . "Asunto: " . $_POST['subject'] . "\n"
+                   . "Mensaje: " . $_POST['message'];
 
-// Redirige al usuario a la página de contacto después de enviar el mensaje
-header("Location: contacto.html");
+    $mail->send();
+    // Redirige al usuario
+    header("Location: contacto.html?success=1");
+    exit();
+} catch (Exception $e) {
+    echo "El mensaje no pudo ser enviado. Error: {$mail->ErrorInfo}";
+}
 ?>
