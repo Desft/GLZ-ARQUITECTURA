@@ -123,155 +123,72 @@ window.addEventListener('load', () => {
 });
 
 // ********** Nuevo código para el Carrusel de Proyectos **********
-let currentSlide = 0;
-let isPlaying = true;
-let progressInterval;
-let slideInterval;
-const slides = document.querySelectorAll('.carousel-item');
-const totalSlides = slides.length;
-const carouselInner = document.getElementById('carouselInner');
-const progressBar = document.getElementById('progressBar');
+// Se ha refactorizado para ser modular y compatible con múltiples carruseles.
+// Elimina la lógica anterior de carrusel y reemplázala con la siguiente:
 
-// Crear indicadores
-function createIndicators() {
-    const indicatorsContainer = document.getElementById('indicators');
-    for (let i = 0; i < totalSlides; i++) {
-        const indicator = document.createElement('div');
-        indicator.className = i === 0 ? 'indicator active' : 'indicator';
-        indicator.onclick = () => goToSlide(i);
-        indicatorsContainer.appendChild(indicator);
+// Lógica modular para carruseles múltiples
+function initCarousel(carouselElement, prevButton, nextButton, items, indicatorsContainer) {
+    let currentIndex = 0;
+
+    function updateCarousel() {
+        items.forEach(item => item.classList.remove('active'));
+        items[currentIndex].classList.add('active');
+        updateIndicators();
     }
-}
 
-// Actualizar indicadores
-function updateIndicators() {
-    const indicators = document.querySelectorAll('.indicator');
-    indicators.forEach((indicator, index) => {
-        indicator.classList.toggle('active', index === currentSlide);
-    });
-}
-
-// Actualizar slides
-function updateSlides() {
-    slides.forEach((slide, index) => {
-        slide.classList.toggle('active', index === currentSlide);
-    });
-    carouselInner.style.transform = `translateX(-${currentSlide * 100}%)`;
-    updateIndicators();
-}
-
-// Ir a slide específico
-function goToSlide(index) {
-    currentSlide = index;
-    updateSlides();
-    resetProgress();
-}
-
-// Siguiente slide
-function nextSlide() {
-    currentSlide = (currentSlide + 1) % totalSlides;
-    updateSlides();
-    resetProgress();
-}
-
-// Slide anterior
-function previousSlide() {
-    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-    updateSlides();
-    resetProgress();
-}
-
-// Barra de progreso
-function updateProgress() {
-    let progress = 0;
-    progressInterval = setInterval(() => {
-        progress += 0.5;
-        progressBar.style.width = progress + '%';
-        if (progress >= 100) {
-            clearInterval(progressInterval);
-            if (isPlaying) {
-                nextSlide();
-            }
+    function updateIndicators() {
+        if (indicatorsContainer) {
+            indicatorsContainer.innerHTML = '';
+            items.forEach((_, index) => {
+                const indicator = document.createElement('span');
+                indicator.classList.add('indicator');
+                if (index === currentIndex) {
+                    indicator.classList.add('active');
+                }
+                indicator.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateCarousel();
+                });
+                indicatorsContainer.appendChild(indicator);
+            });
         }
-    }, 40); // 4 segundos total
-}
-
-// Resetear progreso
-function resetProgress() {
-    clearInterval(progressInterval);
-    progressBar.style.width = '0%';
-    if (isPlaying) {
-        updateProgress();
     }
-}
 
-// Auto-play
-function startAutoPlay() {
-    isPlaying = true;
-    resetProgress();
-}
-
-function stopAutoPlay() {
-    isPlaying = false;
-    clearInterval(progressInterval);
-}
-
-// Event listeners para pausar en hover
-const carouselContainer = document.querySelector('.carousel-container');
-if (carouselContainer) {
-    carouselContainer.addEventListener('mouseenter', stopAutoPlay);
-    carouselContainer.addEventListener('mouseleave', startAutoPlay);
-}
-
-
-// Controles de teclado
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') {
-        previousSlide();
-    } else if (e.key === 'ArrowRight') {
-        nextSlide();
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : items.length - 1;
+            updateCarousel();
+        });
     }
-});
 
-// Touch/Swipe support para móviles
-let startX = 0;
-let endX = 0;
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            currentIndex = (currentIndex < items.length - 1) ? currentIndex + 1 : 0;
+            updateCarousel();
+        });
+    }
 
-if (carouselContainer) {
-    carouselContainer.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-    });
-
-    carouselContainer.addEventListener('touchmove', (e) => {
-        endX = e.touches[0].clientX;
-    });
-
-    carouselContainer.addEventListener('touchend', () => {
-        if (startX - endX > 50) {
-            nextSlide();
-        } else if (endX - startX > 50) {
-            previousSlide();
-        }
-    });
+    updateCarousel(); // Initialize carousel
 }
 
-// Inicialización del carrusel
+// Inicializar el carrusel principal de proyectos
 document.addEventListener('DOMContentLoaded', () => {
-    if (slides.length > 0) {
-        createIndicators();
-        startAutoPlay();
-        updateSlides(); // Asegura que el carrusel se muestre correctamente al cargar la página
-        preloadImages();
+    const mainCarouselContainer = document.querySelector('.carousel-container');
+    if (mainCarouselContainer) {
+        const mainPrevButton = mainCarouselContainer.querySelector('.carousel-prev');
+        const mainNextButton = mainCarouselContainer.querySelector('.carousel-next');
+        const mainItems = mainCarouselContainer.querySelectorAll('.carousel-item');
+        const mainIndicators = mainCarouselContainer.querySelector('.carousel-indicators');
+        initCarousel(mainCarouselContainer, mainPrevButton, mainNextButton, mainItems, mainIndicators);
     }
 });
 
-// Precargar imágenes
-function preloadImages() {
-    slides.forEach(slide => {
-        const img = slide.querySelector('img');
-        if (img && img.src) {
-            const preloadImg = new Image();
-            preloadImg.src = img.src;
-        }
-    });
-}
+// Inicializar todos los carruseles de servicio
+const serviceCarousels = document.querySelectorAll('.service-carousel-container');
+serviceCarousels.forEach(carouselContainer => {
+    const prevButton = carouselContainer.querySelector('.service-carousel-prev');
+    const nextButton = carouselContainer.querySelector('.service-carousel-next');
+    const items = carouselContainer.querySelectorAll('.service-carousel-item');
+    const indicators = carouselContainer.querySelector('.service-carousel-indicators');
+    initCarousel(carouselContainer, prevButton, nextButton, items, indicators);
+});
