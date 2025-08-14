@@ -191,7 +191,13 @@
             <div class="contact-content">
                 <div class="contact-form fade-in">
                     <h3>Envíanos un Mensaje</h3>
-                    <form name="contact" method="POST" data-netlify="true">
+                     <form name="contact" method="POST" netlify netlify-honeypot="bot-field">
+                    <!-- Campo oculto para honeypot (protección spam) -->
+                    <input type="hidden" name="bot-field" />
+                    
+                    <!-- ✅ ESTE ES EL CAMPO QUE FALTABA - OBLIGATORIO PARA NETLIFY -->
+                    <input type="hidden" name="form-name" value="contact" />
+
                         <div class="form-group">
                             <label for="name">Nombre</label>
                             <input type="text" id="name" name="name" placeholder="Tu Nombre" required>
