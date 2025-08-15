@@ -15,26 +15,25 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 block: 'start'
             });
         }
-        // Cierra el menú móvil si está abierto al hacer clic en un enlace
         document.querySelector('.nav-links').classList.remove('active');
     });
 });
 
-// Scroll animations using IntersectionObserver (Más eficiente)
+// Scroll animations using IntersectionObserver
 document.addEventListener('DOMContentLoaded', () => {
     const fadeInElements = document.querySelectorAll('.fade-in');
 
     const observerOptions = {
-        root: null, // viewport
+        root: null,
         rootMargin: '0px',
-        threshold: 0.1 // 10% del elemento visible para activar
+        threshold: 0.1
     };
 
     const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                observer.unobserve(entry.target); // Dejar de observar una vez que se hizo visible
+                observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
@@ -43,21 +42,20 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    // Animate counters when about section is visible - Usando IntersectionObserver
     const aboutSection = document.querySelector('.about');
-    let counterAnimated = false; // Mueve la variable para que esté accesible
+    let counterAnimated = false;
     const counterObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting && !counterAnimated) {
                 animateCounters();
-                counterAnimated = true; // Marca como animado
-                counterObserver.unobserve(entry.target); // Dejar de observar una vez que se animó
+                counterAnimated = true;
+                counterObserver.unobserve(entry.target);
             }
         });
     }, {
         root: null,
         rootMargin: '0px',
-        threshold: 0.5 // Cuando el 50% de la sección "About" es visible
+        threshold: 0.5
     });
 
     if (aboutSection) {
@@ -65,46 +63,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
 // Counter animation
 function animateCounters() {
     const counters = document.querySelectorAll('.stat-number');
     counters.forEach(counter => {
-        const target = parseInt(counter.textContent.replace(/[^0-9]/g, '')); // Limpiar para obtener solo el número
-        const originalText = counter.textContent; // Guardar el texto original para '+', '%'
+        const target = parseInt(counter.textContent.replace(/[^0-9]/g, ''));
+        const originalText = counter.textContent;
         const increment = target / 100;
         let current = 0;
         
         const timer = setInterval(() => {
             current += increment;
             if (current >= target) {
-                // Asegura que el texto final sea el objetivo, manteniendo '+' o '%'
                 counter.textContent = target + (originalText.includes('+') ? '+' : '') + (originalText.includes('%') ? '%' : '');
                 clearInterval(timer);
             } else {
-                // Actualiza con el número redondeado, manteniendo '+' o '%'
                 counter.textContent = Math.floor(current) + (originalText.includes('+') ? '+' : '') + (originalText.includes('%') ? '%' : '');
             }
         }, 20);
     });
 }
 
-// ** MODIFICACIÓN AQUÍ **
-// Eliminamos el listener que previene el envío y solo mostramos la alerta.
-// El envío se maneja automáticamente con el HTML.
-
-// ** Código original que fue modificado: **
-// document.querySelector('form').addEventListener('submit', function(e) {
-//     e.preventDefault();
-//     alert('¡Gracias por contactarnos! Te responderemos en las próximas 24 horas.');
-//     this.reset();
-// });
-
-// ** Nuevo código recomendado para manejar el mensaje de éxito **
-// Netlify se encarga del envío, y nosotros solo mostramos la alerta después de un envío exitoso.
-// Esto se logra de forma nativa con Netlify Forms.
-
-// ********** UNIFICAMOS LOS EVENT LISTENERS DE SCROLL Y MEJORAMOS LA CABECERA **********
 window.addEventListener('scroll', function() {
     const header = document.querySelector('header');
     if (window.scrollY > 0) {
@@ -113,18 +92,6 @@ window.addEventListener('scroll', function() {
         header.classList.remove('scrolled');
     }
 });
-
-// Aseguramos que las animaciones se carguen al inicio para los elementos ya visibles
-window.addEventListener('load', () => {
-    // Al usar IntersectionObserver, la llamada inicial a handleScrollAnimations()
-    // ya no es estrictamente necesaria aquí porque el DOMContentLoaded ya lo maneja
-    // para los elementos inicialmente visibles.
-    // Pero si quieres una llamada explícita, puedes mantenerla si es más fácil de depurar.
-});
-
-// ********** Nuevo código para el Carrusel de Proyectos **********
-// Se ha refactorizado para ser modular y compatible con múltiples carruseles.
-// Elimina la lógica anterior de carrusel y reemplázala con la siguiente:
 
 // Lógica modular para carruseles múltiples
 function initCarousel(carouselElement, prevButton, nextButton, items, indicatorsContainer) {
@@ -191,4 +158,71 @@ serviceCarousels.forEach(carouselContainer => {
     const items = carouselContainer.querySelectorAll('.service-carousel-item');
     const indicators = carouselContainer.querySelector('.service-carousel-indicators');
     initCarousel(carouselContainer, prevButton, nextButton, items, indicators);
+});
+
+
+// ** Lógica para el modal de expansión de imagen con carrusel **
+const imageModal = document.getElementById('image-modal');
+const modalImage = imageModal.querySelector('img');
+const modalClose = imageModal.querySelector('.modal-close');
+const modalPrevBtn = imageModal.querySelector('.modal-prev-btn');
+const modalNextBtn = imageModal.querySelector('.modal-next-btn');
+const allExpandBtns = document.querySelectorAll('.expand-btn');
+
+let currentCarouselImages = [];
+let currentImageIndex = 0;
+
+// Mostrar modal
+function showModal(images, index) {
+    currentCarouselImages = images;
+    currentImageIndex = index;
+    modalImage.src = currentCarouselImages[currentImageIndex];
+    imageModal.style.display = 'flex';
+}
+
+// Ocultar modal
+function hideModal() {
+    imageModal.style.display = 'none';
+}
+
+// Navegar a la siguiente imagen en el modal
+function nextImage() {
+    currentImageIndex = (currentImageIndex < currentCarouselImages.length - 1) ? currentImageIndex + 1 : 0;
+    modalImage.src = currentCarouselImages[currentImageIndex];
+}
+
+// Navegar a la imagen anterior en el modal
+function prevImage() {
+    currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : currentCarouselImages.length - 1;
+    modalImage.src = currentCarouselImages[currentImageIndex];
+}
+
+// Asignar evento click a cada botón de expandir
+allExpandBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Encontrar el carrusel padre
+        const parentCarousel = btn.closest('.service-carousel-container, .carousel-container');
+        if (!parentCarousel) return;
+
+        // Obtener todas las imágenes del carrusel padre
+        const images = Array.from(parentCarousel.querySelectorAll('.carousel-item img, .service-carousel-item img')).map(img => img.src);
+        
+        // Encontrar el índice de la imagen clicada
+        const currentImageSrc = btn.parentNode.querySelector('img').src;
+        const currentIndex = images.indexOf(currentImageSrc);
+        
+        showModal(images, currentIndex);
+    });
+});
+
+// Asignar eventos a los botones de navegación del modal
+modalPrevBtn.addEventListener('click', prevImage);
+modalNextBtn.addEventListener('click', nextImage);
+modalClose.addEventListener('click', hideModal);
+
+// Cerrar modal al hacer clic fuera de la imagen
+window.addEventListener('click', (event) => {
+    if (event.target == imageModal) {
+        hideModal();
+    }
 });

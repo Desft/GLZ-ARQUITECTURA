@@ -173,6 +173,33 @@ nav {
 }
 
 /* Asegúrate de que los enlaces del menú móvil no se vean inicialmente */
+.nav-links {
+        position: fixed;
+        top: 90px;
+        left: 0;
+        width: 100%;
+        height: calc(100% - 90px);
+        background: rgba(0, 0, 0, 0.95);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        transform: translateX(100%); /* <-- ESTO LO OCULTA INICIALMENTE */
+        transition: transform 0.3s ease-in-out;
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden; /* <-- ESTO TAMBIÉN LO OCULTA */
+    }
+
+    .nav-links.active {
+        transform: translateX(0); /* <-- ESTO LO HACE VISIBLE AL CLIC */
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .mobile-menu {
+        display: flex; /* <-- Muestra el botón del menú en móvil */
+    }
 @media (max-width: 768px) { /* Ajusta el breakpoint si es necesario */
     .nav-links {
         position: fixed;
@@ -1151,4 +1178,138 @@ html {
     .service-carousel-container {
         max-width: 100%;
     }
+}
+/* Animación de entrada para los carruseles */
+.service-carousel-item.active {
+    animation: fadeIn 0.8s ease-in-out;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Estilos para el botón de expandir */
+.expand-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    z-index: 5;
+    opacity: 0; /* Oculto por defecto */
+    transition: opacity 0.3s ease;
+}
+
+.service-carousel-item:hover .expand-btn {
+    opacity: 1; /* Se muestra al pasar el mouse */
+}
+
+/* Estilos para el modal (ventana emergente) */
+/* Estilos para el modal (ventana emergente) */
+.image-modal {
+    display: none; /* <-- Esto es lo que lo oculta al cargar la página */
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    
+    /* Para centrar el contenido */
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.modal-content {
+    position: relative;
+    padding: 20px;
+    
+    /* Regla clave: Limita el tamaño del contenedor del modal */
+    max-width: 800px; /* Tamaño máximo deseado */
+    max-height: 90vh; /* Altura máxima del 90% de la ventana */
+    width: 90%; /* Se adapta a un 90% del ancho disponible */
+    
+    overflow: hidden; /* Evita que el contenido se desborde y cause scroll */
+}
+
+.modal-content img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%; /* La imagen no excederá el ancho del contenedor */
+    max-height: 100%; /* La imagen no excederá la altura del contenedor */
+    object-fit: contain; /* Ajusta la imagen para que quepa sin cortarse */
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+
+}
+/* Estilos para los botones de navegación del modal */
+.modal-content .modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    padding: 15px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    z-index: 10;
+    transition: background-color 0.3s;
+}
+
+.modal-content .modal-nav:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-prev-btn {
+    left: 10px;
+}
+
+.modal-next-btn {
+    right: 10px;
+}
+
+.modal-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content .modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 20;
 }
