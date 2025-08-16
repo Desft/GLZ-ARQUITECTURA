@@ -1,47 +1,52 @@
-// Mobile menu toggle
+// ==========================
+// 📌 Menú móvil
+// ==========================
 function toggleMenu() {
     const navLinks = document.querySelector('.nav-links');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
     navLinks.classList.toggle('active');
+    mobileMenu.classList.toggle('active');
+    
+    const links = document.querySelectorAll('.nav-links li');
+    links.forEach((link, index) => {
+        link.style.animation = navLinks.classList.contains('active')
+            ? `fadeInRight 0.4s ease forwards ${index * 0.1 + 0.2}s`
+            : '';
+    });
 }
 
-// Smooth scrolling
+// ==========================
+// 📌 Scroll suave
+// ==========================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
         document.querySelector('.nav-links').classList.remove('active');
     });
 });
 
-// Scroll animations using IntersectionObserver
+// ==========================
+// 📌 Animaciones con IntersectionObserver
+// ==========================
 document.addEventListener('DOMContentLoaded', () => {
     const fadeInElements = document.querySelectorAll('.fade-in');
-
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries, observer) => {
+    const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
+                obs.unobserve(entry.target);
             }
         });
-    }, observerOptions);
+    }, { threshold: 0.1 });
 
-    fadeInElements.forEach(el => {
-        observer.observe(el);
-    });
+    fadeInElements.forEach(el => observer.observe(el));
 
+    // Contadores en "Nosotros"
     const aboutSection = document.querySelector('.about');
     let counterAnimated = false;
     const counterObserver = new IntersectionObserver((entries) => {
@@ -52,18 +57,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 counterObserver.unobserve(entry.target);
             }
         });
-    }, {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.5
-    });
+    }, { threshold: 0.5 });
 
-    if (aboutSection) {
-        counterObserver.observe(aboutSection);
-    }
+    if (aboutSection) counterObserver.observe(aboutSection);
+
+    // Inicializar funcionalidades
+    initCarousels();
+    initImageModal();
 });
 
-// Counter animation
+// ==========================
+// 📌 Animación de contadores
+// ==========================
 function animateCounters() {
     const counters = document.querySelectorAll('.stat-number');
     counters.forEach(counter => {
@@ -75,154 +80,180 @@ function animateCounters() {
         const timer = setInterval(() => {
             current += increment;
             if (current >= target) {
-                counter.textContent = target + (originalText.includes('+') ? '+' : '') + (originalText.includes('%') ? '%' : '');
+                counter.textContent = target + 
+                    (originalText.includes('+') ? '+' : '') + 
+                    (originalText.includes('%') ? '%' : '');
                 clearInterval(timer);
             } else {
-                counter.textContent = Math.floor(current) + (originalText.includes('+') ? '+' : '') + (originalText.includes('%') ? '%' : '');
+                counter.textContent = Math.floor(current) + 
+                    (originalText.includes('+') ? '+' : '') + 
+                    (originalText.includes('%') ? '%' : '');
             }
         }, 20);
     });
 }
 
+// ==========================
+// 📌 Header con scroll
+// ==========================
 window.addEventListener('scroll', function() {
     const header = document.querySelector('header');
-    if (window.scrollY > 0) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
+    header.classList.toggle('scrolled', window.scrollY > 0);
 });
 
-// Lógica modular para carruseles múltiples
-function initCarousel(carouselElement, prevButton, nextButton, items, indicatorsContainer) {
-    let currentIndex = 0;
+// ==========================
+// 📌 Carruseles (servicios y proyectos)
+// ==========================
+function initCarousels() {
+    const allCarousels = document.querySelectorAll('.carousel-container, .service-carousel-container');
+    
+    allCarousels.forEach(carouselContainer => {
+        const prevButton = carouselContainer.querySelector('.carousel-prev, .service-carousel-prev');
+        const nextButton = carouselContainer.querySelector('.carousel-next, .service-carousel-next');
+        const items = carouselContainer.querySelectorAll('.carousel-item, .service-carousel-item');
+        const indicatorsContainer = carouselContainer.querySelector('.carousel-indicators, .service-carousel-indicators');
 
-    function updateCarousel() {
-        items.forEach(item => item.classList.remove('active'));
-        items[currentIndex].classList.add('active');
-        updateIndicators();
-    }
+        if (items.length === 0) return;
 
-    function updateIndicators() {
-        if (indicatorsContainer) {
+        let currentIndex = 0;
+        let autoPlayInterval;
+
+        function updateCarousel() {
+            items.forEach(item => item.classList.remove('active'));
+            items[currentIndex].classList.add('active');
+            updateIndicators();
+        }
+
+        function updateIndicators() {
+            if (!indicatorsContainer) return;
             indicatorsContainer.innerHTML = '';
             items.forEach((_, index) => {
                 const indicator = document.createElement('span');
                 indicator.classList.add('indicator');
-                if (index === currentIndex) {
-                    indicator.classList.add('active');
-                }
+                if (index === currentIndex) indicator.classList.add('active');
                 indicator.addEventListener('click', () => {
                     currentIndex = index;
                     updateCarousel();
+                    resetAutoPlay();
                 });
                 indicatorsContainer.appendChild(indicator);
             });
         }
-    }
 
-    if (prevButton) {
-        prevButton.addEventListener('click', () => {
-            currentIndex = (currentIndex > 0) ? currentIndex - 1 : items.length - 1;
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % items.length;
             updateCarousel();
-        });
-    }
+        }
 
-    if (nextButton) {
-        nextButton.addEventListener('click', () => {
-            currentIndex = (currentIndex < items.length - 1) ? currentIndex + 1 : 0;
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + items.length) % items.length;
             updateCarousel();
-        });
-    }
+        }
 
-    updateCarousel(); // Initialize carousel
-}
+        function startAutoPlay() {
+            if (items.length > 1) {
+                const delay = carouselContainer.classList.contains('carousel-container') ? 5000 : 4000;
+                autoPlayInterval = setInterval(nextSlide, delay);
+            }
+        }
 
-// Inicializar el carrusel principal de proyectos
-document.addEventListener('DOMContentLoaded', () => {
-    const mainCarouselContainer = document.querySelector('.carousel-container');
-    if (mainCarouselContainer) {
-        const mainPrevButton = mainCarouselContainer.querySelector('.carousel-prev');
-        const mainNextButton = mainCarouselContainer.querySelector('.carousel-next');
-        const mainItems = mainCarouselContainer.querySelectorAll('.carousel-item');
-        const mainIndicators = mainCarouselContainer.querySelector('.carousel-indicators');
-        initCarousel(mainCarouselContainer, mainPrevButton, mainNextButton, mainItems, mainIndicators);
-    }
-});
+        function stopAutoPlay() {
+            if (autoPlayInterval) clearInterval(autoPlayInterval);
+        }
 
-// Inicializar todos los carruseles de servicio
-const serviceCarousels = document.querySelectorAll('.service-carousel-container');
-serviceCarousels.forEach(carouselContainer => {
-    const prevButton = carouselContainer.querySelector('.service-carousel-prev');
-    const nextButton = carouselContainer.querySelector('.service-carousel-next');
-    const items = carouselContainer.querySelectorAll('.service-carousel-item');
-    const indicators = carouselContainer.querySelector('.service-carousel-indicators');
-    initCarousel(carouselContainer, prevButton, nextButton, items, indicators);
-});
+        function resetAutoPlay() {
+            stopAutoPlay();
+            startAutoPlay();
+        }
 
+        if (prevButton) prevButton.addEventListener('click', () => { prevSlide(); resetAutoPlay(); });
+        if (nextButton) nextButton.addEventListener('click', () => { nextSlide(); resetAutoPlay(); });
 
-// ** Lógica para el modal de expansión de imagen con carrusel **
-const imageModal = document.getElementById('image-modal');
-const modalImage = imageModal.querySelector('img');
-const modalClose = imageModal.querySelector('.modal-close');
-const modalPrevBtn = imageModal.querySelector('.modal-prev-btn');
-const modalNextBtn = imageModal.querySelector('.modal-next-btn');
-const allExpandBtns = document.querySelectorAll('.expand-btn');
+        carouselContainer.addEventListener('mouseenter', stopAutoPlay);
+        carouselContainer.addEventListener('mouseleave', startAutoPlay);
 
-let currentCarouselImages = [];
-let currentImageIndex = 0;
-
-// Mostrar modal
-function showModal(images, index) {
-    currentCarouselImages = images;
-    currentImageIndex = index;
-    modalImage.src = currentCarouselImages[currentImageIndex];
-    imageModal.style.display = 'flex';
-}
-
-// Ocultar modal
-function hideModal() {
-    imageModal.style.display = 'none';
-}
-
-// Navegar a la siguiente imagen en el modal
-function nextImage() {
-    currentImageIndex = (currentImageIndex < currentCarouselImages.length - 1) ? currentImageIndex + 1 : 0;
-    modalImage.src = currentCarouselImages[currentImageIndex];
-}
-
-// Navegar a la imagen anterior en el modal
-function prevImage() {
-    currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : currentCarouselImages.length - 1;
-    modalImage.src = currentCarouselImages[currentImageIndex];
-}
-
-// Asignar evento click a cada botón de expandir
-allExpandBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Encontrar el carrusel padre
-        const parentCarousel = btn.closest('.service-carousel-container, .carousel-container');
-        if (!parentCarousel) return;
-
-        // Obtener todas las imágenes del carrusel padre
-        const images = Array.from(parentCarousel.querySelectorAll('.carousel-item img, .service-carousel-item img')).map(img => img.src);
-        
-        // Encontrar el índice de la imagen clicada
-        const currentImageSrc = btn.parentNode.querySelector('img').src;
-        const currentIndex = images.indexOf(currentImageSrc);
-        
-        showModal(images, currentIndex);
+        updateCarousel();
+        startAutoPlay();
     });
-});
+}
 
-// Asignar eventos a los botones de navegación del modal
-modalPrevBtn.addEventListener('click', prevImage);
-modalNextBtn.addEventListener('click', nextImage);
-modalClose.addEventListener('click', hideModal);
-
-// Cerrar modal al hacer clic fuera de la imagen
-window.addEventListener('click', (event) => {
-    if (event.target == imageModal) {
-        hideModal();
+// ==========================
+// 📌 Modal de imágenes (fix aplicado)
+// ==========================
+function initImageModal() {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const closeBtn = modal ? modal.querySelector('.close') : null;
+    
+    if (!modal || !modalImg) return;
+    
+    let currentImages = [];
+    let currentImageIndex = 0;
+    
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.expand-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const expandBtn = e.target.closest('.expand-btn');
+            const carousel = expandBtn.closest('.service-carousel, .carousel');
+            const items = carousel ? carousel.querySelectorAll('.service-carousel-item, .carousel-item') : [];
+            
+            // ✅ Guardar solo las imágenes de este carrusel
+            currentImages = Array.from(items).map(item => {
+                const imgEl = item.querySelector('img');
+                return imgEl ? imgEl.src : null;
+            }).filter(src => src !== null);
+            
+            // ✅ Determinar índice según la posición del item
+            const clickedItem = expandBtn.closest('.service-carousel-item, .carousel-item');
+            currentImageIndex = Array.from(items).indexOf(clickedItem);
+            
+            showModal(currentImages[currentImageIndex]);
+        }
+    });
+    
+    function showModal(imgSrc) {
+        modalImg.src = imgSrc;
+        modal.style.display = 'flex';
+        modal.classList.add('modal-active');
+        document.body.style.overflow = 'hidden';
     }
-});
+    
+    function hideModal() {
+        modal.style.display = 'none';
+        modal.classList.remove('modal-active');
+        document.body.style.overflow = 'auto';
+    }
+    
+    function showNextImage() {
+        if (currentImages.length > 1) {
+            currentImageIndex = (currentImageIndex + 1) % currentImages.length;
+            modalImg.src = currentImages[currentImageIndex];
+        }
+    }
+    
+    function showPrevImage() {
+        if (currentImages.length > 1) {
+            currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
+            modalImg.src = currentImages[currentImageIndex];
+        }
+    }
+    
+    if (closeBtn) closeBtn.addEventListener('click', hideModal);
+    const nextBtn = modal.querySelector('.modal-next');
+    const prevBtn = modal.querySelector('.modal-prev');
+    if (nextBtn) nextBtn.addEventListener('click', showNextImage);
+    if (prevBtn) prevBtn.addEventListener('click', showPrevImage);
+    
+    modal.addEventListener('click', e => { if (e.target === modal) hideModal(); });
+    
+    document.addEventListener('keydown', function(e) {
+        if (modal.style.display === 'flex') {
+            if (e.key === 'Escape') hideModal();
+            if (e.key === 'ArrowRight') showNextImage();
+            if (e.key === 'ArrowLeft') showPrevImage();
+        }
+    });
+}
+
