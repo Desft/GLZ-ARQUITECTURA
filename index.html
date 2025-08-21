@@ -410,7 +410,7 @@
             <h2 class="section-title center fade-in">Nosotros</h2>
             <div class="about-content">
                 <div class="about-text fade-in">
-                    <p>Con más de 15 años de experiencia en el campo de la arquitectura, Jorge Gonzalez ofrece proyectos que combinan funcionalidad, estética y calidad. Cursó la carrera de Técnico en Construcción en el Colegio Nacional de Educación Profesional Técnica (CONALEP) en Atlacomulco y ha desarrollado su carrera participando en la mayoría de las áreas de la profesión, lo que le permite abordar cada obra con una visión integral.</p>
+                    <p>Con más de 15 años de experiencia en el campo de la arquitectura, Jorge Gonzalez ofrece proyectos que combinan funcionalidad, estética y calidad. Cuenta con cédula profesional del Colegio Nacional de Educación Profesional Técnica, cursó la carrera de Arquitectura en el Tecnológico de Estudios Superiores de Jocotitlán; ha desarrollado su carrera participando en la mayoría de las áreas de la profesión, lo que le permite abordar cada obra con una visión integral.</p>
                     <p>Se distingue por la calidad de sus diseños, la entrega puntual de cada proyecto, la atención al detalle y el cumplimiento de los más altos estándares constructivos. Su objetivo es crear espacios que no solo sean visualmente atractivos, sino que también sean funcionales, duraderos y pensados para mejorar la vida de quienes los habitan.</p>
                 </div>
                 <div class="about-stats fade-in">
@@ -437,31 +437,82 @@
             <div class="contact-content">
                 <div class="contact-form fade-in">
                     <h3>Envíanos un Mensaje</h3>
-                     <form name="contact" method="POST" netlify netlify-honeypot="bot-field">
-                    <!-- Campo oculto para honeypot (protección spam) -->
-                    <input type="hidden" name="bot-field" />
-                    
-                    <!-- ✅ ESTE ES EL CAMPO QUE FALTABA - OBLIGATORIO PARA NETLIFY -->
-                    <input type="hidden" name="form-name" value="contact" />
+                     <!-- Incluir EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
-                        <div class="form-group">
-                            <label for="name">Nombre</label>
-                            <input type="text" id="name" name="name" placeholder="Tu Nombre" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Correo Electrónico</label>
-                            <input type="email" id="email" name="email" placeholder="tu@ejemplo.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="subject">Asunto</label>
-                            <input type="text" id="subject" name="subject" placeholder="Asunto de tu mensaje">
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Mensaje</label>
-                            <textarea id="message" name="message" rows="6" placeholder="Escribe tu mensaje aquí..." required></textarea>
-                        </div>
-                        <button type="submit" class="cta-button">Enviar Mensaje</button>
-                    </form>
+<form id="contact-form">
+    <div class="form-group">
+        <label for="name">Nombre</label>
+        <input type="text" id="name" name="user_name" placeholder="Tu Nombre" required>
+    </div>
+    <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <input type="email" id="email" name="user_email" placeholder="tu@ejemplo.com" required>
+    </div>
+    <div class="form-group">
+        <label for="subject">Asunto</label>
+        <input type="text" id="subject" name="subject" placeholder="Asunto de tu mensaje">
+    </div>
+    <div class="form-group">
+        <label for="message">Mensaje</label>
+        <textarea id="message" name="message" rows="6" placeholder="Escribe tu mensaje aquí..." required></textarea>
+    </div>
+    <button type="submit" class="cta-button" id="submit-btn">Enviar Mensaje</button>
+</form>
+
+<!-- Mensaje de estado -->
+<div id="form-status" style="display: none; padding: 15px; margin-top: 15px; border-radius: 5px;"></div>
+
+<script>
+// 🔥 AQUÍ VAN TUS DATOS DE EMAILJS (reemplaza con los tuyos)
+emailjs.init("qnhnOYB0RDpN_tbtR"); // ← Tu Public Key
+
+document.getElementById('contact-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Cambiar botón mientras envía
+    const submitBtn = document.getElementById('submit-btn');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Enviando...';
+    submitBtn.disabled = true;
+    
+    // Enviar correo con EmailJS
+    emailjs.sendForm(
+        'service_ikk4clp',    // ← Tu Service ID
+        'template_qpay1zr',   // ← Tu Template ID
+        this
+    ).then(function(response) {
+        // ✅ ÉXITO
+        showStatus('¡Mensaje enviado exitosamente! Te contactaremos pronto.', 'success');
+        document.getElementById('contact-form').reset();
+        
+    }).catch(function(error) {
+        // ❌ ERROR
+        showStatus('Error al enviar mensaje. Inténtalo de nuevo.', 'error');
+        console.error('EmailJS Error:', error);
+        
+    }).finally(function() {
+        // Restaurar botón
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
+// Mostrar mensajes de estado
+function showStatus(message, type) {
+    const statusDiv = document.getElementById('form-status');
+    statusDiv.textContent = message;
+    statusDiv.style.display = 'block';
+    statusDiv.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da';
+    statusDiv.style.color = type === 'success' ? '#155724' : '#721c24';
+    statusDiv.style.border = type === 'success' ? '1px solid #c3e6cb' : '1px solid #f5c6cb';
+    
+    // Ocultar después de 5 segundos
+    setTimeout(() => {
+        statusDiv.style.display = 'none';
+    }, 5000);
+}
+</script>
                 </div>
                 <div class="contact-info fade-in">
                     <h3>Atlacomulco para México</h3>
@@ -511,14 +562,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Formulario oculto Netlify -->
-    <form name="contact" netlify netlify-honeypot="bot-field" hidden>
-        <input type="text" name="name">
-        <input type="email" name="email">
-        <input type="text" name="subject">
-        <textarea name="message"></textarea>
-    </form>
 
     <!-- ✅ SOLO main.js -->
     <script src="js/main.js"></script>
